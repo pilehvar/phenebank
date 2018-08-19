@@ -34,6 +34,11 @@ Map an entity to its corresponding concept in any of the following 5 ontologies:
 Given an input text, extract its entities and map each to its corresponding concept in the ontologies (a pipeline containing both previous stages).
 
 
+
+Online demo
+============
+* To be activated soon!
+
 Data
 ====
 Download the followings:
