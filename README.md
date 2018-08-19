@@ -37,8 +37,8 @@ Given an input text, extract its entities and map each to its corresponding conc
 Data
 ====
 Download the followings:
-* [embeddings]
-* [data]
+* [embeddings.zip](http://mws-02485.mws3.csx.cam.ac.uk/embeddings.zip) (around 1.1GB)
+* [data.zip](http://mws-02485.mws3.csx.cam.ac.uk/data.zip) (around 200MB)
 
 
 Getting Started:
