@@ -144,9 +144,13 @@ class namemb():
                         sub_vec = np.zeros(len(self.word_vectors["in"]))
                         ngrams = self.break_to_ngram(n, 3, 6)
                         for ngram in ngrams:
-                            if ngram in self.word_vectors:
-                                n_vec = self.normalize(self.word_vectors[ngram])
-                                np.add(sub_vec, n_vec, sub_vec)
+                            try:
+                                if ngram in self.word_vectors:
+                                    n_vec = self.normalize(self.word_vectors[ngram])
+                                    np.add(sub_vec, n_vec, sub_vec)
+                            except:
+                                    continue
+                                    print("WARNING: ",ngram," has a problem!")
 
                         normal_vec = self.normalize(sub_vec)
            
@@ -165,10 +169,13 @@ class namemb():
             except Exception:
                 pass	
             for ngram in ngrams:
-                if ngram in self.word_vectors:
-                   n_vec = self.normalize(self.word_vectors[ngram])
-                   np.add(ngram_vec, n_vec, ngram_vec)
-
+                try:
+                    if ngram in self.word_vectors:
+                        n_vec = self.normalize(self.word_vectors[ngram])
+                        np.add(ngram_vec, n_vec, ngram_vec)
+                except:
+                        print("WARNING",ngram,"has a problem!")
+                        continue 
 
         return self.normalize(word_vec),self.normalize(ngram_vec)
 

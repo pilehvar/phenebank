@@ -383,6 +383,9 @@ def gene2Uber(mapping_file):
 def main():
     hpo = Ontology()
 
+    for id in hpo.id2name.keys():
+        print(id+"\t"+"\t".join(hpo.id2name[id]))
+
     print(hpo.id2name["HP:0004941"])
     print(len(hpo.name2ID))
     print(len(hpo.id2name))

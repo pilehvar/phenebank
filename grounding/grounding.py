@@ -179,7 +179,7 @@ class grounding():
             alternatives.append(name.replace('protein','').strip())
         return alternatives
 
-    def get_closests_match(self, name, type, restricted_ontologies=[], replace_unk=True, ngram_backoff=True, topn=3, alternatives=False):
+    def get_closests_match(self, name, type, restricted_ontologies=[], replace_unk=True, ngram_backoff=True, topn=3, alternatives=False, keep_id=False):
 
         if len(restricted_ontologies) > 0:
             ontologies = self.get_ontology_by_name(restricted_ontologies)
@@ -214,7 +214,7 @@ class grounding():
 
         wemb, cemb = self.name_embedding.get_embedding(name, replace_unk=replace_unk, ngram_backoff=ngram_backoff)
 
-        results = self.get_candidates(name, self.word_vectors, wemb, topn, ID_set)
+        results = self.get_candidates(name, self.word_vectors, wemb, topn, ID_set, keep_id=keep_id)
 
         oov, total = self.name_embedding.get_oov(name)
  
@@ -222,14 +222,14 @@ class grounding():
         if results[0][1] < self.word_threshold and ngram_backoff and oov > 0 and oov < 3 and (oov == 2 and total > 4):
             print(name)
             print(">",results)
-            results2 = self.get_candidates(name, self.ngram_vectors, cemb, topn, ID_set)
+            results2 = self.get_candidates(name, self.ngram_vectors, cemb, topn, ID_set, keep_id=keep_id)
             print(">>",results2)
             return results2
  
         return results 
 
 
-    def get_candidates(self, name, vectors, emb, topn, ID_set):
+    def get_candidates(self, name, vectors, emb, topn, ID_set, keep_id=False):
         max = 0
         most_similars = []
         for ont in self.ontologies:
@@ -242,7 +242,10 @@ class grounding():
         for sim in most_similars:
             if done > topn:
                 continue
-            pruned_set.append((sim[0].split("#")[0], sim[1]))
+            if keep_id:
+                pruned_set.append((sim[0], sim[1]))
+            else: 
+                pruned_set.append((sim[0].split("#")[0], sim[1]))
             done += 1
 
         return pruned_set

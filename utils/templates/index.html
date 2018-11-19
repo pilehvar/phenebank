@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-124241930-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-124241930-1');
+</script>
     <link href="https://fonts.googleapis.com/css?family=Saira" rel="stylesheet">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
@@ -36,6 +45,9 @@
         margin-left: -80px;
     }
 
+    div.gentext{
+      line-height: 2.0;
+    }
     /* Popup arrow */
     .popup .popuptext::after {
         content: "";
@@ -79,9 +91,11 @@
         line-height: 1.6;
       }
       span {
-          
-          padding-left:5px;
-          padding-right:5px;
+          border-radius: 5px 5px 5px 5px;
+          padding-bottom:2px; 
+          padding-top:2px;
+          padding-left:2px;
+          padding-right:2px;
           text-align:justify;
           word-spacing:5px;
           color: black;
@@ -223,9 +237,13 @@
    <body>
     <div class="container">
       <div class="header">
-        <h3 class="text-muted" style="font-family: 'Cinzel', serif;"><b>PheneBank Entity Tagger</b></h3>
+        <center>
+        <h3 class="text-muted" style="font-family: 'Cinzel', serif;"><b>Entity Tagger</b></h3>
+        <img src="/static/phenebank.jpg" width="200" height="55">
+        </center>
       </div>
       <hr/>
+      <center>
       <div>
 
           <form method="get">
@@ -251,6 +269,7 @@ However, the role of autoantibodies in GTS remains unclear, since contradictory 
     <p>
         <input type="button" value="Tag" id="calculate" style="font-family: 'Saira', sans-serif;height:40px;width:70px">
       </p>
+      </center>
         <br>
 
         <hr/>
@@ -260,6 +279,7 @@ However, the role of autoantibodies in GTS remains unclear, since contradictory 
       </form>
       </div>
 
+      <center>
         <h4 class="text-muted" style="font-family: 'Cinzel', serif;"><b>Colour codes:</b></h4>
       <span class="B-Phenotype">Phenotype</span>
       <span class="B-Disease">Disease</span>

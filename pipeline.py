@@ -123,8 +123,8 @@ class pipe():
         return y_preds
 
 
-    def ground_it(self, word, type, topn=1, enhanced=True):
-        return self.gnd.get_closests_match(word, type, topn=topn)
+    def ground_it(self, word, type, topn=1, enhanced=True, keep_id=False):
+        return self.gnd.get_closests_match(word, type, topn=topn, keep_id=keep_id)
 
 
     def tag_harmonise(self, a):

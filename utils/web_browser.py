@@ -10,6 +10,7 @@ from utils.entity import EntityType
 
 # Initialize the Flask application
 app = Flask(__name__)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
 pipe = pp.pipe()
 
@@ -44,50 +45,68 @@ def tag_sentence():
 #TODO: need to add here the grounding information: from the grounding class, one can map a phenotype to its hpo class
 
 
-def bulletize(names):
+def qualify(score):
+    score = float(score)
+    if score > 0.97:
+        return "High confidence"
+    if score > 0.94:
+        return "Medium confidence"
+    if score > 0.9:
+        return "Low confidence"
+
+def bulletize(name, id, lexnum):
+
     out = "<ul>"
-    counter = 0
-    for name in names:
-        counter += 1
-        if counter > 5:
-            continue
-        out += "<li>"
-        out += name
-        out += "</li>"
+    if lexnum > 0:
+        out += "<li><font color=\"yellow\">" + pipe.gnd.id2string[id+"#"+str(lexnum)] + "</font></li>"
+    else:
+        out += "<li><font color=\"yellow\">" + name  + "</font></li>"
+
+    for i in range(5):
+        if i == int(lexnum):
+            continue       
+        if id+"#"+str(i) in pipe.gnd.id2string:
+            word = pipe.gnd.id2string[id+"#"+str(i)]
+            if word.lower() == name.lower():
+                continue
+            out += "<li>"
+            out += word
+            out += "</li>"
 
     out += "</ul>"
 
     return out
 
 
-def create_ann(closest):
+def create_ann(name, closest):
     ann = ""
 
     closest = closest[0]
 
+    if "#" in closest[0]:
+        id, lexnum = closest[0].split("#")
+    else:
+        id = closest[0]
+        lexnum = 0
 
-    if closest[0].startswith("HP:"):
-        ann = "<a target='#' href='http://compbio.charite.de/hpoweb/showterm?id=" + str(closest[0]).replace("'",
+    score = closest[1]
+
+    if id.startswith("HP:"):
+        ann = "<a target='#' href='http://compbio.charite.de/hpoweb/showterm?id=" + str(id).replace("'",
                                                                                                             "") + "'>" + str(
-            closest[0]).replace("'", "") + "</a> (" + str(closest[1]) + ")<br>" + bulletize(pipe.gnd.hp.id2name[closest[0]])
-    elif closest[0].startswith("SCTID:"):
-        ann = "<a target='#' href='http://browser.ihtsdotools.org/?perspective=full&conceptId1=" + \
-              str(closest[0]).split(":")[1].replace(
-                  "'",
-                  "") + "'>" + str(
-            closest[0]).replace("'", "") + "</a> (" + str(closest[1]) + ")<br>" + bulletize(
-            pipe.gnd.snmd.id2name[closest[0]])
-    elif closest[0].startswith("D"):
-        ann = "<a target='#' href='https://meshb.nlm.nih.gov/record/ui?ui=" + str(closest[0]).replace("'",
-                                                                                                      "") + "'>" + str(
-            closest[0]).replace("'", "") + "</a> (" + str(closest[1]) + ")<br>" + bulletize(
-            pipe.gnd.msh.id2name[closest[0]])
-
-    elif closest[0].startswith("PR"):
-        ann = "<a target='#' href='http://research.bioinformatics.udel.edu/pro/entry/" + str(closest[0]).replace("'",
+            id).replace("'", "") + "</a> (" + qualify(score) + ")<br>" + bulletize(name, id, lexnum)
+    elif id.startswith("SCTID:"):
+        ann = "<a target='#' href='http://browser.ihtsdotools.org/?perspective=full&conceptId1=" + id.split(":")[1].replace("'","") + "'>" + str(id).replace("'", "") + "</a> (" + qualify(score) + ")<br>" + bulletize(name, id, lexnum)
+    
+    elif id.startswith("PR"):
+        ann = "<a target='#' href='http://research.bioinformatics.udel.edu/pro/entry/" + str(id).replace("'",
                                                                                                   "") + "/'>" + str(
-        closest[0]).replace("'", "") + "</a> (" + str(closest[1]) + ")<br>" + bulletize(
-        pipe.gnd.pr.id2name[closest[0]])
+        id).replace("'", "") + "</a> (" + qualify(score) + ")<br>" + bulletize(name, id, lexnum)
+
+    elif id.startswith("D"):
+        ann = "<a target='#' href='https://meshb.nlm.nih.gov/record/ui?ui=" + str(id).replace("'",
+                                                                                                      "") + "'>" + str(
+            id).replace("'", "") + "</a> (" + qualify(score) + ")<br>" + bulletize(name, id, lexnum)
 
 
     return ann
@@ -130,21 +149,27 @@ def tag_sentence_as_phrase():
                     closest = None
 
                     if w in abbreviations:
-                        closest = pipe.ground_it(abbreviations.get(w), tag)
+                        closest = pipe.ground_it(abbreviations.get(w), tag, keep_id=True)
                     else:
-                        closest = pipe.ground_it(w, tag)
+                        closest = pipe.ground_it(w, tag, keep_id=True)
 
                     #print w, "::", tag, closest
 
-                    outs.append("<div class ='popup' onclick='popit(" + str(idn) + ")'>")
-                    outs.append("<span class='" + tag.name + "'>" + str(w) + "</span>")
-
                     print(closest)
-                    if closest is not None and len(closest) > 0 and closest[0][1] >= 0.9:
-                        ann = create_ann(closest)
-                        outs.append("<span class ='popuptext' id='myPopup" + str(idn) + "'>" + ann + "</span>")
+                    conf = 0.5
+                    if len(closest) > 0:
+                        conf = float(closest[0][1])
+                        if float(closest[0][1])  > 0.9:
+                            conf = 5*(1.0-float(closest[0][1]))
+                            outs.append("<div class ='popup' onclick='popit(" + str(idn) + ")'>")
 
-                    outs.append("</div>")
+                    outs.append("<span class='" + tag.name + "'><span style=\"padding-left:1px; padding-right:1px;padding-top:1px;padding-bottom:1px; background-color: rgba(256, 256, 256," + str(conf)  +");\">" + str(w) + "</span></span>")
+
+
+                    if closest is not None and len(closest) > 0 and closest[0][1] >= 0.9:
+                        ann = create_ann(w, closest)
+                        outs.append("<span class ='popuptext' id='myPopup" + str(idn) + "'>" + ann + "</span></div>")
+
 
                     idn += 1
 
@@ -158,7 +183,7 @@ def tag_sentence_as_phrase():
 if __name__ == '__main__':
     app.run(
         host="0.0.0.0",
-        port=int("5002"),
+        port=int("5000"),
         debug=True,
         use_reloader=False
     )

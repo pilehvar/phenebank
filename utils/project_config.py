@@ -20,7 +20,8 @@ class ProjectConfig(object):
         self.pro_data_path = project_path+"/data/pro_reasoned.obo"
         self.omim_data_path = project_path+"/data/mimTitles.txt"
 
-        self.snomed_data_path = project_path+"/data/sct2_Description_Full-en_INT_20170131.modified.txt"
+        #self.snomed_data_path = project_path+"/data/sct2_Description_Full-en_INT_20170131.modified.txt"
+        self.snomed_data_path = project_path+"/data/sct2_Description_Full-en_INT_20180731.modified.txt"
         self.snomed_active_concepts = project_path+"/data/snomed_active.txt"
         self.snomed_filtered_branches = ["123037004","404684003","105590001","363787002","373873005","272379006","410607006"] #organisms was added by Taher
         self.snomed_filtered_concepts_path = project_path+"/data/snomed_categories.tab"
