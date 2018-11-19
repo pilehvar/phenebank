@@ -43,7 +43,7 @@ Data
 ====
 Download the followings:
 * [embeddings.zip](http://mws-02485.mws3.csx.cam.ac.uk/embeddings.zip) (around 1.1GB)
-* [data.zip](http://mws-02485.mws3.csx.cam.ac.uk/data.zip) (around 200MB)
+* [data.zip](http://mws-02485.mws3.csx.cam.ac.uk/) (around 200MB)
 
 
 Getting Started:
