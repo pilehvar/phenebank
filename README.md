@@ -42,8 +42,8 @@ Online demo
 Data
 ====
 Download the followings:
-* [embeddings.zip](http://mws-02485.mws3.csx.cam.ac.uk/embeddings.zip) (around 1.1GB)
-* [data.zip](http://mws-02485.mws3.csx.cam.ac.uk/) (around 200MB)
+* [embeddings.zip](https://demo.phenebank.org/static/embeddings.zip) (around 1.1GB)
+* [data.zip](https://demo.phenebank.org/static/data.zip) (around 200MB)
 
 
 Getting Started:
@@ -113,3 +113,10 @@ Dependencies
 The tagging stage relies on Anago, a Bidirectional LSTM-CRF for Sequence Labeling:
 https://github.com/Hironsan/anago
 
+
+Citation
+============
+
+M.T. Pilehvar, D. Smedley, A. Bernard, and N. Collier
+[PheneBank: a literature-based database of phenotypes](https://academic.oup.com/bioinformatics/article/38/4/1179/6426070)
+Bioinformatics, Volume 38, Issue 4, 2022.
